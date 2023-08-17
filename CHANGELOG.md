@@ -1,3 +1,6 @@
+### v1.3
+- Changed loop into a command
+
 ### v1.2
 - Fixed the yt command
 

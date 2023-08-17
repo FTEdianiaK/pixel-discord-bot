@@ -15,7 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 import csv
 import requests
 import json
@@ -71,7 +71,7 @@ except FileExistsError:
 
 
 # Constants list
-VERSION = "v1.2"
+VERSION = "v1.3"
 TOKENS = {}      # dis, yt, itch, us
 GITHUB = []      # 0 repo, 1 mem, 2 channel, 3 role
 YOUTUBE = []     # 0 id, 1 mem, 2 channel, 3 msg, 4 role
@@ -181,10 +181,6 @@ async def clean(args: tuple) -> list:
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
-    try:
-        check.start()
-    except RuntimeError:
-        pass
 
 
 # Dev commands
@@ -504,8 +500,9 @@ async def us(ctx: commands.Context, *args):
             await ctx.channel.send("ERROR: Unknown p.us subcommand")
 
 
-# Check loop
-@tasks.loop(hours=6)
+# Check command
+@bot.command()
+@commands.is_owner()
 async def check():
     print("Checking...")
     with alive_bar(len(GITHUB), title="GITHUB", length=len(GITHUB)+3) as bar:

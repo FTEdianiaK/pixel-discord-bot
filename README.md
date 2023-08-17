@@ -6,13 +6,6 @@
 
 [Changelog](https://github.com/FTEdianiaK/pixel-discord-bot/blob/main/CHANGELOG.md) | [License](https://github.com/FTEdianiaK/pixel-discord-bot/blob/main/LICENSE)
 
-### Features
-- Uses APIs to check when something changes and notifies the server about it.
-    - github - any repo
-    - youtube - any channel id
-    - itch - takes data from a self-hosted .json file
-    - unsplash - any user
-
 ### How to...
 **Self host**:
 - Install necessary requirements using req.txt
