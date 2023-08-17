@@ -71,7 +71,7 @@ except FileExistsError:
 
 
 # Constants list
-VERSION = "v1.1"
+VERSION = "v1.2"
 TOKENS = {}      # dis, yt, itch, us
 GITHUB = []      # 0 repo, 1 mem, 2 channel, 3 role
 YOUTUBE = []     # 0 id, 1 mem, 2 channel, 3 msg, 4 role
@@ -295,7 +295,7 @@ async def yt(ctx: commands.Context, *args):
             if arg == []:
                 _con = False
                 await ctx.channel.send("ERROR: ID required")
-            if len(arg) > 3:
+            if len(arg) > 4:
                 _con = False
                 await ctx.channel.send("ERROR: Too many positional arguments "
                                        + "given")
