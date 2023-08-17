@@ -71,7 +71,7 @@ except FileExistsError:
 
 
 # Constants list
-VERSION = "v1.0"
+VERSION = "v1.1"
 TOKENS = {}      # dis, yt, itch, us
 GITHUB = []      # 0 repo, 1 mem, 2 channel, 3 role
 YOUTUBE = []     # 0 id, 1 mem, 2 channel, 3 msg, 4 role
