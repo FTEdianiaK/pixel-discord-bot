@@ -19,7 +19,6 @@ from discord.ext import commands, tasks
 import csv
 import requests
 import json
-from time import sleep
 from alive_progress import alive_bar
 from alive_progress import config_handler
 
@@ -182,7 +181,10 @@ async def clean(args: tuple) -> list:
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
-    check.start()
+    try:
+        check.start()
+    except RuntimeError:
+        pass
 
 
 # Dev commands
@@ -508,7 +510,6 @@ async def check():
     print("Checking...")
     with alive_bar(len(GITHUB), title="GITHUB", length=len(GITHUB)+3) as bar:
         for i in range(0, len(GITHUB)):
-            sleep(120)
             j = GITHUB[i]
             try:
                 gh = requests.get("https://api.github.com/repos/"
@@ -544,7 +545,6 @@ async def check():
                    title="YOUTUBE",
                    length=len(YOUTUBE)+3) as bar:
         for i in range(0, len(YOUTUBE)):
-            sleep(120)
             j = YOUTUBE[i]
             try:
                 yt = requests.get("https://www.googleapis.com/youtube/v3/"
@@ -580,7 +580,6 @@ async def check():
             bar()
     with alive_bar(len(ITCH), title="ITCH", length=len(ITCH)+3) as bar:
         for i in range(0, len(ITCH)):
-            sleep(120)
             j = ITCH[i]
             try:
                 itch = requests.get(TOKENS["itch"])
@@ -619,7 +618,6 @@ async def check():
                    title="UNSPLASH",
                    length=len(UNSPLASH)+3) as bar:
         for i in range(0, len(UNSPLASH)):
-            sleep(120)
             j = UNSPLASH[i]
             try:
                 us = requests.get(f"https://api.unsplash.com/users/{j[0]}"

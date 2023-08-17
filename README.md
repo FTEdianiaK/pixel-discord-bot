@@ -24,7 +24,7 @@
 
 ### Credits
 **Libraries used in the code:**
-- [csv, json, time - from Python Standard Library - PSF](https://docs.python.org/3/library/index.html)
+- [csv, json - from Python Standard Library - PSF](https://docs.python.org/3/library/index.html)
 - [discord.py - by Rapptz - MIT](https://pypi.org/project/discord.py/)
 - [requests - by Kenneth Reitz - Apache 2.0](https://pypi.org/project/requests/)
 - [alive-progress - by Rogério Sampaio de Almeida - MIT](https://pypi.org/project/alive-progress/)
