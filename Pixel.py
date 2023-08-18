@@ -71,7 +71,7 @@ except FileExistsError:
 
 
 # Constants list
-VERSION = "v1.3"
+VERSION = "v1.3.1"
 TOKENS = {}      # dis, yt, itch, us
 GITHUB = []      # 0 repo, 1 mem, 2 channel, 3 role
 YOUTUBE = []     # 0 id, 1 mem, 2 channel, 3 msg, 4 role
@@ -503,7 +503,7 @@ async def us(ctx: commands.Context, *args):
 # Check command
 @bot.command()
 @commands.is_owner()
-async def check():
+async def check(ctx: commands.Context, *args):
     print("Checking...")
     with alive_bar(len(GITHUB), title="GITHUB", length=len(GITHUB)+3) as bar:
         for i in range(0, len(GITHUB)):
