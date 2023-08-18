@@ -4,7 +4,7 @@
 
 ![Bot avatar](APP.png)
 
-[Changelog](https://github.com/FTEdianiaK/pixel-discord-bot/blob/main/CHANGELOG.md) | [License](https://github.com/FTEdianiaK/pixel-discord-bot/blob/main/LICENSE)
+[Full Changelog](https://github.com/FTEdianiaK/pixel-discord-bot/compare/v1.2...v1.3) | [License](https://github.com/FTEdianiaK/pixel-discord-bot/blob/main/LICENSE)
 
 ### How to...
 **Self host**:
