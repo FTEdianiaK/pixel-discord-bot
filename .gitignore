@@ -223,5 +223,8 @@ $RECYCLE.BIN/
 # API tokens
 secrets.json
 
+# Icon files
+*.ico
+
 # Batch files
 *.bat

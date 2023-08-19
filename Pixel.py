@@ -71,7 +71,6 @@ except FileExistsError:
 
 
 # Constants list
-VERSION = "v1.3.1"
 TOKENS = {}      # dis, yt, itch, us
 GITHUB = []      # 0 repo, 1 mem, 2 channel, 3 role
 YOUTUBE = []     # 0 id, 1 mem, 2 channel, 3 msg, 4 role
@@ -118,24 +117,6 @@ print("""Pixel  Copyright (C) 2023  Foxie EdianiaK a.k.a. F_TEK
 This program comes with ABSOLUTELY NO WARRANTY. This is free software,
 and you are welcome to redistribute it under certain conditions.
 For more details refer to the LICENSE file in the GitHub repository.""")
-
-try:
-    _ver = requests.get("https://api.github.com/repos/ftedianiak/"
-                        + "pixel-discord-bot/releases")
-except requests.exceptions.ConnectionError:
-    print("\n" * 2)
-    print("ERROR: Couldn't reach github.com")
-else:
-    if _ver.status_code == 200:
-        _chk = json.loads(_ver.text)[0]["name"]
-        if VERSION != _chk:
-            print("\n" * 2)
-            print("New version is available.\nGet it here: "
-                  + "https://github.com/FTEdianiaK/"
-                  + "pixel-discord-bot/releases/latest")
-    else:
-        print("\n" * 2)
-        print("ERROR: Couldn't reach github.com")
 
 print("\n" * 4)
 
@@ -639,7 +620,8 @@ async def check(ctx: commands.Context, *args):
 
                         ctx = bot.get_channel(int(j[2]))
 
-                        msg = discord.Embed(title=f"New photo by {usr.upper()}",
+                        msg = discord.Embed(title="New photo by "
+                                            + usr.upper(),
                                             url=url)
                         msg.set_image(url=img)
                         msg.set_footer(text=f"Photo by {author} on Unsplash",
