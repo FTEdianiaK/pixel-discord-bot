@@ -16,11 +16,17 @@
 
 import discord
 from discord.ext import commands
+from os import system
 import csv
 import requests
 import json
 from alive_progress import alive_bar
 from alive_progress import config_handler
+from datetime import datetime
+
+
+# Window title change
+system("title Pixel")
 
 
 # Bot pre-setup
@@ -69,6 +75,12 @@ try:
 except FileExistsError:
     pass
 
+try:
+    with open("updated.txt", "x", encoding="utf-8") as f:
+        f.close()
+except FileExistsError:
+    pass
+
 
 # Constants list
 TOKENS = {}      # dis, yt, itch, us
@@ -76,6 +88,7 @@ GITHUB = []      # 0 repo, 1 mem, 2 channel, 3 role
 YOUTUBE = []     # 0 id, 1 mem, 2 channel, 3 msg, 4 role
 ITCH = []        # 0 game, 1 mem, 2 channel, 3 role
 UNSPLASH = []    # 0 user, 1 mem, 2 channel, 3 role
+UPDATED = ""     # last check date
 
 
 # Loads files
@@ -111,6 +124,10 @@ with open("unsplash.csv", "r", encoding="utf-8") as f:
             UNSPLASH.append(_row)
     f.close()
 
+with open("updated.txt", "r", encoding="utf-8") as f:
+    DATE = f.read()
+    f.close()
+
 
 # License header & Version check
 print("""Pixel  Copyright (C) 2023  Foxie EdianiaK a.k.a. F_TEK
@@ -123,31 +140,41 @@ print("\n" * 4)
 
 # Sets up alive bars
 config_handler.set_global(spinner="circles",
-                          bar="checks")
+                          bar="checks",
+                          spinner_length=3)
 
 
 # Global functions
 async def save():
-    with alive_bar(4, title="Saving", length=4) as bar:
+    with alive_bar(5, title="Saving", length=4) as bar:
         with open("github.csv", "w", encoding="utf-8") as f:
             _wrt = csv.writer(f)
             _wrt.writerows(GITHUB)
             f.close()
+            print("Saved github.csv")
             bar()
         with open("youtube.csv", "w", encoding="utf-8") as f:
             _wrt = csv.writer(f)
             _wrt.writerows(YOUTUBE)
             f.close()
+            print("Saved youtube.csv")
             bar()
         with open("itch.csv", "w", encoding="utf-8") as f:
             _wrt = csv.writer(f)
             _wrt.writerows(ITCH)
             f.close()
+            print("Saved itch.csv")
             bar()
         with open("unsplash.csv", "w", encoding="utf-8") as f:
             _wrt = csv.writer(f)
             _wrt.writerows(UNSPLASH)
             f.close()
+            print("Saved unsplash.csv")
+            bar()
+        with open("updated.txt", "w", encoding="utf-8") as f:
+            f.write(DATE)
+            f.close()
+            print("Saved updated.txt")
             bar()
     print("Saved!")
 
@@ -161,7 +188,13 @@ async def clean(args: tuple) -> list:
 # Log in event
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user}")
+    global DATE
+    print(f"\n~ ~ ~ Logged in as {bot.user} ~ ~ ~")
+
+    _now = str(datetime.now())[:10]
+    if DATE != _now:
+        DATE = _now
+        await check(None)
 
 
 # Dev commands
@@ -485,15 +518,22 @@ async def us(ctx: commands.Context, *args):
 @bot.command()
 @commands.is_owner()
 async def check(ctx: commands.Context, *args):
-    print("Checking...")
-    with alive_bar(len(GITHUB), title="GITHUB", length=len(GITHUB)+3) as bar:
+    print("\nChecking...")
+
+    if len(GITHUB) < 3:
+        _bar_len = 3
+    else:
+        _bar_len = len(GITHUB)
+
+    with alive_bar(len(GITHUB), title="GITHUB", length=_bar_len) as bar:
         for i in range(0, len(GITHUB)):
             j = GITHUB[i]
+            _stat = f"Checked {j[0]} repo"
             try:
                 gh = requests.get("https://api.github.com/repos/"
                                   + f"{j[0]}/releases")
             except requests.exceptions.ConnectionError:
-                print(f"ERROR: Couldn't find {j[0]} repo")
+                _stat = f"ERROR: Couldn't find {j[0]} repo"
             else:
                 if gh.status_code == 200:
                     gh = json.loads(gh.text)
@@ -516,21 +556,30 @@ async def check(ctx: commands.Context, *args):
                             msg += f"\n<@&{j[3]}>"
 
                         await ctx.send(msg)
+                        _stat = f"Announced {j[0]} repo update"
                 else:
-                    print(f"ERROR: Couldn't find {j[0]} repo")
+                    _stat = f"ERROR: Couldn't find {j[0]} repo"
+            print(_stat)
             bar()
+
+    if len(YOUTUBE) < 3:
+        _bar_len = 3
+    else:
+        _bar_len = len(YOUTUBE)
+
     with alive_bar(len(YOUTUBE),
                    title="YOUTUBE",
-                   length=len(YOUTUBE)+3) as bar:
+                   length=_bar_len) as bar:
         for i in range(0, len(YOUTUBE)):
             j = YOUTUBE[i]
+            _stat = f"Checked channel #{j[0]}"
             try:
                 yt = requests.get("https://www.googleapis.com/youtube/v3/"
                                   + f"search?part=snippet&channelId={j[0]}"
                                   + "&maxResults=1&order=date&type=video"
                                   + f"&key={TOKENS['yt']}")
             except requests.exceptions.ConnectionError:
-                print(f"ERROR: Couldn't find channel #{j[0]} data")
+                _stat = f"ERROR: Couldn't find channel #{j[0]} data"
             else:
                 if yt.status_code == 200:
                     yt = json.loads(yt.text)
@@ -555,14 +604,23 @@ async def check(ctx: commands.Context, *args):
 
                         if j[4] != "":
                             await ctx.send(f"<@&{j[4]}>")
+
+                        _stat = f"Announced channel #{j[0]} update"
+            print(_stat)
             bar()
-    with alive_bar(len(ITCH), title="ITCH", length=len(ITCH)+3) as bar:
+
+    if len(ITCH) < 3:
+        _bar_len = 3
+    else:
+        _bar_len = len(ITCH)
+
+    with alive_bar(len(ITCH), title="ITCH", length=_bar_len) as bar:
         for i in range(0, len(ITCH)):
             j = ITCH[i]
             try:
                 itch = requests.get(TOKENS["itch"])
             except requests.exceptions.ConnectionError:
-                print("ERROR: Couldn't get json")
+                _stat = "ERROR: Couldn't get json"
             else:
                 if itch.status_code == 200:
                     itch = json.loads(itch.text)
@@ -571,6 +629,7 @@ async def check(ctx: commands.Context, *args):
                     url = f"https://edianiak.itch.io/{j[0]}"
                     img = itch[j[0]][2]
                     name = itch[j[0]][3]
+                    _stat = f"Checked {j[0]} {cls}"
 
                     if j[1] == "":
                         ITCH[i][1] = chk
@@ -589,20 +648,30 @@ async def check(ctx: commands.Context, *args):
 
                         if j[3] != "":
                             await ctx.send(f"<@&{j[3]}>")
+
+                        _stat = f"Announced {j[0]} {cls} update"
                 else:
-                    print("ERROR: Couldn't get json")
+                    _stat = "ERROR: Couldn't get json"
+            print(_stat)
             bar()
+
+    if len(UNSPLASH) < 3:
+        _bar_len = 3
+    else:
+        _bar_len = len(UNSPLASH)
+
     with alive_bar(len(UNSPLASH),
                    title="UNSPLASH",
-                   length=len(UNSPLASH)+3) as bar:
+                   length=_bar_len) as bar:
         for i in range(0, len(UNSPLASH)):
             j = UNSPLASH[i]
+            _stat = f"Checked photos by {j[0]}"
             try:
                 us = requests.get(f"https://api.unsplash.com/users/{j[0]}"
                                   + f"/photos?client_id={TOKENS['us']}"
                                   + "&per_page=1")
             except requests.exceptions.ConnectionError:
-                print(f"ERROR: Couldn't load {j[0]}'s photos")
+                _stat = f"ERROR: Couldn't load {j[0]}'s photos"
             else:
                 if us.status_code == 200:
                     us = json.loads(us.text)
@@ -631,10 +700,15 @@ async def check(ctx: commands.Context, *args):
 
                         if j[3] != "":
                             await ctx.send(f"<@&{j[3]}>")
+
+                        _stat = f"Announced new photo by {j[0]}"
                 else:
-                    print(f"ERROR: Couldn't load {j[0]}'s photos")
+                    _stat = f"ERROR: Couldn't load {j[0]}'s photos"
+            print(_stat)
             bar()
-    print("Check complete!")
+
+    print("Check complete!\n")
+
     await save()
 
 
